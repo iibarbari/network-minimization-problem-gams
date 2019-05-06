@@ -1,0 +1,86 @@
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 DEX-DEG x86 64bit/Mac OS X - 05/05/19 22:35:15 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  Model project;
+   2   
+   3  Sets
+   4  f facility /1*7/
+   5  r region /1*7/;
+   6   
+   7  Parameter
+   8  c(f) capacity for facility /1 225, 2 500, 3 300,4 900, 5 600, 6 130, 7 110/
+   9  d(r) demand for region /1 100, 2 200,3 120,4 45, 5 250, 6 80, 7 75/
+  10  fixedCost(f) fixed cost for facility /1 1000, 2 1500,3 1200,4 2500, 5 1800, 6 800, 7 750/;
+  11   
+  12   
+  13  Table K(f,r) unit shipping costs between all regions
+  14          1       2        3       4      5       6       7
+  15  1       0       7        4       5      12      7       14
+  16  2       7       0        11      12     12      14      11
+  17  3       4       11       0       7      16      3       11
+  18  4       5       12       7       0      15      5       9
+  19  5       12      12       16      15     0       14      6
+  20  6       7       14       3       5      14      0       8
+  21  7       14      11       11      9      6       8       0 ;
+  22   
+  23  Scalar
+  24  n number of facilities open /3/
+  25  M a big number /10000000000/;
+  26   
+  27  Variables
+  28  x(f,r) number of shipment from facility to region
+  29  z total annual cost
+  30  y(f) if facility is open one otherwise zero
+  31   
+  32  Positive Variable x; z
+****                       $143
+**** 143  A suffix is missing
+  33  Binary Variable y;
+****       $36
+****  36  '=' or '..' or ':=' or '$=' operator expected
+****      rest of statement ignored
+  34   
+  35  Equations
+  36   
+  37  totalCost       define objective function shipment costs plue fixed costs
+  38  capacity(f)     capacity of facility
+  39  demand(r)       demand of region
+  40  open            number of open facilities
+  41  constraint(f)   if a facility is open one if not open its quantities is zero;
+  42   
+  43  totalCost..     z =e= (sum((f,r), K(f,r)*x(f,r)) + sum(f, fixedCost(f)*y(f)) );
+  44  capacity(f)..   sum(r, x(f,r)) =l= c(f) ;
+  45  demand(r)..     sum(f, x(f,r)) =g= d(r) ;
+  46  open..          sum(f,y(f)) =e= n ;
+  47  constraint(f).. sum(r, x(f,r)) =L= y(f)*M ;
+  48   
+  49  Model project /all/ ;
+  50  Solve project using mip minimizing z;
+****                                      $257
+**** 257  Solve statement not checked because of previous errors
+  51  Display x.l,y.l;
+****            $141$141
+**** 141  Symbol declared but no values have been assigned. Check for missing
+****         data definition, assignment, data loading or implicit assignment
+****         via a solve statement.
+****         A wild shot: You may have spurious commas in the explanatory
+****         text of a declaration. Check symbol reference list.
+
+**** 5 ERROR(S)   0 WARNING(S)
+
+
+COMPILATION TIME     =        0.005 SECONDS      3 MB  26.1.0 rf2b37b9 DEX-DEG
+
+
+USER: GAMS Development Corporation, USA              G871201/0000CA-ANY
+      Free Demo, +1 202-342-0180, support@gams.com, www.gams.com DC0000
+
+
+**** FILE SUMMARY
+
+Input      /Users/barbari/Desktop/OR/son/bbv1.gms
+Output     /Users/barbari/Desktop/OR/son/bbv1.lst
+
+**** USER ERROR(S) ENCOUNTERED
